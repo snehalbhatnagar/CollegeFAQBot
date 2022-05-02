@@ -1,0 +1,75 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "botServices_collegefaqbot_bot_name": {
+            "defaultValue": "collegefaqbot-bot",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.BotService/botServices",
+            "apiVersion": "2021-05-01-preview",
+            "name": "[parameters('botServices_collegefaqbot_bot_name')]",
+            "location": "global",
+            "sku": {
+                "name": "F0"
+            },
+            "kind": "sdk",
+            "properties": {
+                "displayName": "[parameters('botServices_collegefaqbot_bot_name')]",
+                "iconUrl": "https://docs.botframework.com/static/devportal/client/images/bot-framework-default.png",
+                "endpoint": "[concat('https://', parameters('botServices_collegefaqbot_bot_name'), '-87be.azurewebsites.net/api/messages')]",
+                "msaAppId": "2cdb889d-f6fc-492a-b85c-8e0736ff003c",
+                "luisAppIds": [],
+                "isStreamingSupported": false,
+                "schemaTransformationVersion": "1.3",
+                "isCmekEnabled": false,
+                "disableLocalAuth": false
+            }
+        },
+        {
+            "type": "Microsoft.BotService/botServices/channels",
+            "apiVersion": "2021-05-01-preview",
+            "name": "[concat(parameters('botServices_collegefaqbot_bot_name'), '/TelegramChannel')]",
+            "location": "global",
+            "dependsOn": [
+                "[resourceId('Microsoft.BotService/botServices', parameters('botServices_collegefaqbot_bot_name'))]"
+            ],
+            "properties": {
+                "properties": {
+                    "isValidated": true,
+                    "isEnabled": true
+                },
+                "etag": "W/\"a191e8fd8c1eb04747218401b36b1a4d5/2/2022 1:32:18 PM\"",
+                "channelName": "TelegramChannel",
+                "location": "global"
+            }
+        },
+        {
+            "type": "Microsoft.BotService/botServices/channels",
+            "apiVersion": "2021-05-01-preview",
+            "name": "[concat(parameters('botServices_collegefaqbot_bot_name'), '/WebChatChannel')]",
+            "location": "global",
+            "dependsOn": [
+                "[resourceId('Microsoft.BotService/botServices', parameters('botServices_collegefaqbot_bot_name'))]"
+            ],
+            "properties": {
+                "properties": {
+                    "sites": [
+                        {
+                            "siteName": "Default Site",
+                            "isEnabled": true,
+                            "isWebchatPreviewEnabled": true
+                        }
+                    ]
+                },
+                "etag": "W/\"542995dbc21281548f27b2ad77ad64035/2/2022 1:32:18 PM\"",
+                "channelName": "WebChatChannel",
+                "location": "global"
+            }
+        }
+    ]
+}
